@@ -5,6 +5,7 @@
 ## 解題說明
 
 實作排序 n 個數字的函式，包含以下：
+
  Insertion Sort
  
  Quick Sort 
