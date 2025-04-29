@@ -38,7 +38,51 @@ std::vector<int> generateWorstCaseQuick(int n) {
 }
 ```
 
-quicksortData 實作：
+AverageCaseData 實作：
+
+```cpp
+
+#include "permute.h"
+#include <cstdlib>
+
+void permute(std::vector<int>& arr) {
+    int n = arr.size();
+    for (int i = n - 1; i >= 1; --i) {
+        int j = rand() % (i + 1);
+        std::swap(arr[i], arr[j]);
+    }
+}
+```
+
+空間與時間複雜度測試 實作：
+
+```cpp
+#include "SortUtils.h"
+#include <chrono>
+#include <windows.h>
+#include <psapi.h>
+
+double measureTime(std::function<void(std::vector<int>&)> sortFunc, std::vector<int> arr, int repeat) {
+    double totalTime = 0;
+    for (int i = 0; i < repeat; ++i) {
+        std::vector<int> temp = arr;
+        auto start = std::chrono::high_resolution_clock::now();
+        sortFunc(temp);
+        auto end = std::chrono::high_resolution_clock::now();
+        totalTime += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    }
+    return totalTime / repeat;
+}
+
+size_t getMemoryUsage() {
+    PROCESS_MEMORY_COUNTERS memInfo;
+    GetProcessMemoryInfo(GetCurrentProcess(), &memInfo, sizeof(memInfo));
+    return memInfo.WorkingSetSize / 1024;
+}
+
+```
+
+quicksort 實作：
 
 ```cpp
 #include "QuickSort.h"
@@ -76,7 +120,7 @@ void quickSort(std::vector<int>& arr) {
 }
 ```
 
-mergesortData 實作：
+mergesort 實作：
 
 ```cpp
 #include "MergeSort.h"
@@ -106,7 +150,7 @@ void mergeSort(std::vector<int>& arr) {
 }
 ```
 
-heapsort Data實作：
+heapsort 實作：
 
 ```cpp
 #include "HeapSort.h"
@@ -133,7 +177,7 @@ void heapSort(std::vector<int>& arr) {
 }
 ```
 
-insertionsort Data 實作：
+insertionsort  實作：
 
 ```cpp
 #include "InsertionSort.h"
@@ -152,7 +196,7 @@ void insertionSort(std::vector<int>& arr) {
 }
 ```
 
-compositesort Data 實作：
+compositesort  實作：
 
 ```cpp
 #include "CompositeSort.h"
@@ -197,6 +241,89 @@ void compositeSort(std::vector<int>& arr) {
     // 預設：使用快速排序
     quickSort(arr);
 }
+```
+
+主程式實作
+
+```cpp
+#include "InsertionSort.h"
+#include "QuickSort.h"
+#include "MergeSort.h"
+#include "HeapSort.h"
+#include "CompositeSort.h"
+#include "SortUtils.h"
+#include "permute.h"
+#include <iostream>
+#include <vector>
+#include <functional>
+#include <iomanip>
+#include <ctime>
+
+// 生成隨機資料（average-case）
+std::vector<int> generateRandomData(int n) {
+    std::vector<int> arr(n);
+    for (int i = 0; i < n; ++i) arr[i] = i;
+    permute(arr);
+    return arr;
+}
+
+// 生成插入排序最壞情況（逆序）
+std::vector<int> generateWorstCaseInsertion(int n) {
+    std::vector<int> arr(n);
+    for (int i = 0; i < n; ++i) arr[i] = n - i;
+    return arr;
+}
+
+// 生成快速排序最壞情況（近乎有序）
+std::vector<int> generateWorstCaseQuick(int n) {
+    std::vector<int> arr(n);
+    for (int i = 0; i < n; ++i) arr[i] = i;
+    return arr;
+}
+
+int main() {
+    srand(time(0));
+    // 測試資料規模
+    std::vector<int> ns = {500, 1000, 2000, 3000, 4000, 5000};
+    // 排序演算法列表
+    std::vector<std::function<void(std::vector<int>&)>> sorts = {
+        insertionSort, quickSort, mergeSort, heapSort, compositeSort
+    };
+    // 排序演算法名稱
+    std::vector<std::string> sortNames = {
+        "Insertion Sort", "Quick Sort", "Merge Sort", "Heap Sort", "Composite Sort"
+    };
+
+    // 輸出表頭
+    std::cout << std::left << std::setw(15) << "n";
+    for (const auto& name : sortNames) {
+        std::cout << std::setw(25) << (name + " Worst (us)") << std::setw(25) << (name + " Avg (us)");
+    }
+    std::cout << std::endl;
+
+    // 對每個資料規模進行測試
+    for (int n : ns) {
+        std::cout << std::setw(15) << n;
+        // 生成測試資料
+        std::vector<int> worstData = generateWorstCaseQuick(n); // 使用快速排序最壞情況
+        std::vector<int> avgData = generateRandomData(n);
+
+        // 測試每個排序演算法
+        for (size_t i = 0; i < sorts.size(); ++i) {
+            // 測量最壞情況
+            double worstTime = measureTime(sorts[i], worstData);
+            // 測量平均情況
+            double avgTime = measureTime(sorts[i], avgData);
+
+            std::cout << std::fixed << std::setprecision(2);
+            std::cout << std::setw(25) << worstTime << std::setw(25) << avgTime;
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
+}
+
 ```
 
 ## 效能分析
