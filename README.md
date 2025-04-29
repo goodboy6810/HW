@@ -19,7 +19,7 @@
 
 ## 程式實作
 
-以下為worstcase:程式碼：
+worstcase程式碼：
 
 ```cpp
 #include <vector>
