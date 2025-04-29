@@ -19,7 +19,7 @@
 
 ## 程式實作
 
-worstcase程式碼：
+WorstCaseData 實作：
 
 ```cpp
 #include <vector>
@@ -38,7 +38,7 @@ std::vector<int> generateWorstCaseQuick(int n) {
 }
 ```
 
-以下為quicksort:程式碼：
+quicksortData 實作：
 
 ```cpp
 #include "QuickSort.h"
@@ -76,7 +76,7 @@ void quickSort(std::vector<int>& arr) {
 }
 ```
 
-以下為mergesort:程式碼：
+mergesortData 實作：
 
 ```cpp
 #include "MergeSort.h"
@@ -106,7 +106,7 @@ void mergeSort(std::vector<int>& arr) {
 }
 ```
 
-以下為heapsort:程式碼：
+heapsort Data實作：
 
 ```cpp
 #include "HeapSort.h"
@@ -133,7 +133,7 @@ void heapSort(std::vector<int>& arr) {
 }
 ```
 
-以下為insertionsort:程式碼：
+insertionsort Data 實作：
 
 ```cpp
 #include "InsertionSort.h"
@@ -152,7 +152,7 @@ void insertionSort(std::vector<int>& arr) {
 }
 ```
 
-以下為compositesort:程式碼：
+compositesort Data 實作：
 
 ```cpp
 #include "CompositeSort.h"
